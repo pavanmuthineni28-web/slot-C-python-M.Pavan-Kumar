@@ -1,1 +1,56 @@
+import re,time
 
+data=[
+'CSE;101;Ravi;CSE;ravi@gmail.com;Dance',
+'CSE;102;Suresh;CSE;suresh@gmail.com;Singing',
+'CSE;103;Naveen;CSE;wrongemail;Drama',
+'ECE;104;Arun;ECE;arun@gmail.com;Dance',
+'ECE;101;Ravi;ECE;ravi@gmail.com;Singing',
+'EEE;105;Kiran;EEE;kiran@gmail.com;Music',
+'EEE;106;Manoj;EEE;manoj@gmail.com;Sports',
+'MECH;107;Ajay;MECH;ajay@gmail.com;Dance',
+'MECH;108;Rahul;MECH;rahul@gmail.com;Drama',
+'CIVIL;109;Vijay;CIVIL;vijay@gmail.com;Music',
+'CIVIL;damaged line'
+]
+
+seen=set()
+valid=[]
+errors=[]
+start=time.perf_counter()
+
+for line in data:
+ p=line.split(';')
+ if len(p)!=6:
+  errors.append("Damaged record: "+line)
+  continue
+
+ dept,reg,name,d,email,event=p
+ if not reg.isdigit():
+  errors.append("Invalid register: "+reg)
+  continue
+ if not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+',email):
+  errors.append("Invalid email: "+email)
+  continue
+ if reg in seen:
+  errors.append("Duplicate register: "+reg)
+  continue
+
+ seen.add(reg)
+ valid.append((reg,name,dept,email,event))
+
+print("COLLEGE FEST REGISTRATION")
+print("-------------------------")
+print("\nACCEPTED REGISTRATIONS")
+for x in valid:
+ print(x)
+
+print("\nERROR REPORT")
+for x in errors:
+ print(x)
+
+print("\nTotal records:",len(data))
+print("Accepted:",len(valid))
+print("Errors:",len(errors))
+print("Time:",round(time.perf_counter()-start,6),"seconds")
+print("\nSUMMARY REPORT GENERATED")
