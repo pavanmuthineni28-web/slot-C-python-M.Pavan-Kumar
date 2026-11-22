@@ -1,1 +1,79 @@
+import sys
+import time
 
+# 1. Naive Recursion
+calls = 0
+
+def ways_naive(n):
+    global calls
+    calls += 1
+
+    if n <= 1:
+        return 1
+
+    return ways_naive(n-1) + ways_naive(n-2)
+
+
+# 2. Memoization
+calls = 0
+
+def ways_memo(n, memo=None):
+    global calls
+    calls += 1
+
+    if memo is None:
+        memo = {}
+
+    if n <= 1:
+        return 1
+
+    if n in memo:
+        return memo[n]
+
+    memo[n] = ways_memo(n-1, memo) + ways_memo(n-2, memo)
+
+    return memo[n]
+
+
+# 3. Iterative Method
+def ways_loop(n):
+    a = 1
+    b = 1
+
+    for i in range(2, n+1):
+        a, b = b, a+b
+
+    return b
+
+
+# Compare Naive and Memoization
+calls = 0
+start = time.time()
+result = ways_naive(25)
+print("Naive:", result, "Calls =", calls)
+print("Naive Time:", time.time() - start)
+
+calls = 0
+start = time.time()
+result = ways_memo(25)
+print("Memo:", result, "Calls =", calls)
+print("Memo Time:", time.time() - start)
+
+
+# Test Memoization with 1000
+print("\nMemoization for 1000:")
+
+try:
+    print(ways_memo(1000))
+except RecursionError as e:
+    print("Error:", e)
+
+print("Recursion Limit:", sys.getrecursionlimit())
+
+
+# Iterative Method for 1000
+start = time.time()
+result = ways_loop(1000)
+
+print("\nIterative Result:", result)
+print("Iterative Time:", time.time() - start)
