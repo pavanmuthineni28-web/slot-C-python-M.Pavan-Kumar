@@ -1,1 +1,51 @@
+import re,time
 
+contacts=[
+ {"name":"Dr. Ravi","phone":"+91 98400 12345","email":"ravi@gmail.com"},
+ {"name":"ravi kumar","phone":"9840012345","email":"ravi.k@gmail.com"},
+ {"name":"Suresh","phone":"9876543210","email":"suresh@gmail.com"},
+ {"name":"Ravi","phone":"9840012345","email":"ravi@gmail.com"},
+ {"name":"Naveen","phone":"9123456780","email":"naveen@gmail.com"}
+]
+
+def phone(p):
+ return re.sub(r'\D','',p)[-10:]
+
+def email(e):
+ return e.strip().lower()
+
+parent=list(range(len(contacts)))
+
+def find(x):
+ if parent[x]!=x:
+  parent[x]=find(parent[x])
+ return parent[x]
+
+def union(a,b):
+ a,b=find(a),find(b)
+ if a!=b: parent[b]=a
+
+index={}
+for i,c in enumerate(contacts):
+ for key in [phone(c["phone"]),email(c["email"])]:
+  if key:
+   if key in index: union(i,index[key])
+   else: index[key]=i
+
+merged={}
+for i,c in enumerate(contacts):
+ root=find(i)
+ if root not in merged:
+  merged[root]={"names":set(),"phones":set(),"emails":set()}
+ merged[root]["names"].add(c["name"])
+ merged[root]["phones"].add(phone(c["phone"]))
+ merged[root]["emails"].add(email(c["email"]))
+
+print("MERGED CONTACTS")
+for c in merged.values():
+ print("\nNames:",c["names"])
+ print("Phones:",c["phones"])
+ print("Emails:",c["emails"])
+
+print("\nTotal Contacts:",len(contacts))
+print("Unique Contacts:",len(merged))
